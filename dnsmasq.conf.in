@@ -661,7 +661,7 @@
 # Include another lot of configuration options.
 #conf-file=/etc/dnsmasq.more.conf
 #conf-dir=/etc/dnsmasq.d
-conf-file=@DNSMASQ_CONF_FILE@
+conf-file=@DNSFWD_CONF_FILE@
 
 # Include all the files in a directory except those ending in .bak
 #conf-dir=/etc/dnsmasq.d,.bak

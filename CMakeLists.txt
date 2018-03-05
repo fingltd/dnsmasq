@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(dnsmasq C)
+project(dnsfwd C)
 
 execute_process(COMMAND bld/get-version ${CMAKE_CURRENT_SOURCE_DIR} 
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -86,18 +86,13 @@ set(SOURCE_FILES
         src/tftp.c
         src/util.c)
 
-add_executable(dnsmasq ${SOURCE_FILES})
-
-if (CMAKE_FULL_INSTALLATION)
-    install(FILES man/dnsmasq.8
-            DESTINATION ${CMAKE_INSTALL_MANDIR}/man8
-            PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ WORLD_READ)
-endif()
+add_executable(dnsfwd ${SOURCE_FILES})
 
 configure_file(dnsmasq.conf.in ${CMAKE_CURRENT_BINARY_DIR}/dnsfwd.conf @ONLY )
-execute_process(COMMAND sed -i -e "s/#.*$//" -i -e "/^$/d" ${CMAKE_CURRENT_BINARY_DIR}/dnsmasq.conf
-		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/sed.log)
+
+execute_process(COMMAND sed -i -e "s/#.*$//" dnsfwd.conf WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+execute_process(COMMAND sed -i -e "/^$/d" dnsfwd.conf WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dnsfwd.conf
         DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
