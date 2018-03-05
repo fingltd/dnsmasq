@@ -1,0 +1,30 @@
+src/*.o
+src/*.mo
+src/dnsmasq.pot
+src/dnsmasq
+src/dnsmasq_baseline
+src/.copts_*
+contrib/lease-tools/dhcp_lease_time
+contrib/lease-tools/dhcp_release
+contrib/lease-tools/dhcp_release6
+debian/files
+debian/substvars
+debian/utils-substvars
+debian/trees/
+debian/build/
+
+# Development
+## CLION
+.idea/
+cmake-build-debug/
+## Configuration
+dnsmasq.conf
+## Snap
+stage/
+snap/
+parts/
+prime/
+*.snap
+
+
+
