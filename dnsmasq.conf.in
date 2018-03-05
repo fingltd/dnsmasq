@@ -8,7 +8,6 @@
 # (53). Setting this to zero completely disables DNS function,
 # leaving only DHCP and/or TFTP.
 #port=5353
-port=@DNSMASQ_CONF_PORT@
 
 # The following two options make you a better netizen, since they
 # tell dnsmasq to filter out queries which the public DNS cannot
@@ -57,7 +56,6 @@ port=@DNSMASQ_CONF_PORT@
 # file, getting its servers from this file instead (see below), then
 # uncomment this.
 #no-resolv
-@DNSMASQ_CONF_NO_RESOLV@
 
 # If you don't want dnsmasq to poll /etc/resolv.conf or other resolv
 # files for changes and re-read them then uncomment this.
@@ -66,8 +64,6 @@ port=@DNSMASQ_CONF_PORT@
 # Add other name servers here, with domain specs if they are for
 # non-public domains.
 #server=/localnet/192.168.0.1
-server=@DNSMASQ_CONF_SERVER_1@
-server=@DNSMASQ_CONF_SERVER_2@
 
 # Example of routing PTR queries to nameservers: this will send all
 # address->name queries for 192.168.3/24 to nameserver 10.1.2.3
@@ -655,19 +651,17 @@ server=@DNSMASQ_CONF_SERVER_2@
 # For debugging purposes, log each DNS query as it passes through
 # dnsmasq.
 #log-queries
-@DNSMASQ_CONF_LOG_QUERIES@
 
 # Log lots of extra information about DHCP transactions.
 #log-dhcp
 
 # Debug mode: don't fork to the background, don't write a pid file, don't change user id, generate a complete cache dump on receipt on SIGUSR1, log to stderr as well as syslog, don't fork new processes to handle TCP queries. 
 #no-daemon
-@DNSMASQ_CONF_NO_DAEMON@
 
 # Include another lot of configuration options.
 #conf-file=/etc/dnsmasq.more.conf
 #conf-dir=/etc/dnsmasq.d
-@DNSMASQ_CONF_CONF_DIR@
+conf-file=@DNSMASQ_CONF_FILE@
 
 # Include all the files in a directory except those ending in .bak
 #conf-dir=/etc/dnsmasq.d,.bak
