@@ -94,11 +94,11 @@ if (CMAKE_FULL_INSTALLATION)
             PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ WORLD_READ)
 endif()
 
-configure_file(dnsmasq.conf.in ${CMAKE_CURRENT_BINARY_DIR}/dnsmasq.conf @ONLY )
+configure_file(dnsmasq.conf.in ${CMAKE_CURRENT_BINARY_DIR}/dnsfwd.conf @ONLY )
 execute_process(COMMAND sed -i -e "s/#.*$//" -i -e "/^$/d" ${CMAKE_CURRENT_BINARY_DIR}/dnsmasq.conf
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/sed.log)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dnsmasq.conf
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dnsfwd.conf
         DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 install(TARGETS ${PROJECT_NAME}
