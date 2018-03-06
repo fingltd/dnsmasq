@@ -1,0 +1,30 @@
+#!/bin/bash
+
+value=$(snapctl get dnsmasq-lifecycle-action)
+
+case "$value" in
+        enable)
+            snapctl start --enable ${SNAP_NAME}.dnsmasqd 2>&1 || true
+            ;;
+        disable)
+            snapctl stop --disable ${SNAP_NAME}.dnsmasqd 2>&1 || true
+            ;;
+        start)
+            snapctl start ${SNAP_NAME}.dnsmasqd 2>&1 || true
+            ;;
+        stop)
+            snapctl stop ${SNAP_NAME}.dnsmasqd 2>&1 || true
+            ;;
+        restart)
+            snapctl start ${SNAP_NAME}.dnsmasqd 2>&1 || true
+            ;;
+        condrestart)
+            if test "x`pidof dnsmasqd`" != x; then
+                stop
+                start
+            fi
+            ;; 
+        *)
+            echo "Usage: $0 {start|stop|restart|condrestart|enable|disable}"
+            ;; 
+esac
