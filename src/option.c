@@ -160,7 +160,8 @@ struct myoption {
 #define LOPT_DHCPTTL       348
 #define LOPT_TFTP_MTU      349
 #define LOPT_REPLY_DELAY   350
- 
+#define LOPT_EDNS0_OPT     351
+
 #ifdef HAVE_GETOPT_LONG
 static const struct option opts[] =  
 #else
@@ -187,6 +188,7 @@ static const struct myoption opts[] =
     { "dhcp-range", 1, 0, 'F' },
     { "dhcp-option", 1, 0, 'O' },
     { "dhcp-boot", 1, 0, 'M' },
+    { "edns-option", 1, 0, LOPT_EDNS0_OPT },
     { "domain", 1, 0, 's' },
     { "domain-suffix", 1, 0, 's' },
     { "interface", 1, 0, 'i' },
@@ -630,7 +632,7 @@ static int atoi_check(char *a, int *res)
     return 0;
 
   unhide_metas(a);
-  
+
   for (p = a; *p; p++)
      if (*p < '0' || *p > '9')
        return 0;
@@ -1475,7 +1477,6 @@ static int parse_dhcp_opt(char *errstr, char *arg, int flags)
     
   return 1;
 }
-
 #endif
 
 void set_option_bool(unsigned int opt)
@@ -1948,7 +1949,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	} while (arg);
 	break;
       }
-	
+
     case LOPT_AUTHZONE: /* --auth-zone */
       {
 	struct auth_zone *new;
@@ -2035,7 +2036,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	  }
 	break;
       }
-      
+
     case  LOPT_AUTHSOA: /* --auth-soa */
       comma = split(arg);
       daemon->soa_sn = (u32)atoi(arg);
@@ -2254,6 +2255,51 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	    ret_err(gen_err);
 	}
       break;
+
+    case LOPT_EDNS0_OPT: /* --edns0-option */
+    {
+      struct edns0_option *new;
+      size_t hexsize;
+      char* cp;
+      int code;
+
+      for (cp = arg; *cp; cp++)
+        if (*cp < '0' || *cp > '9')
+          break;
+
+      if (*cp != ':')
+        ret_err(_("bad format"));
+
+      *cp = '\0';
+      if (!atoi_check16(arg, &code))
+        ret_err(_("wrong code"));
+
+      hexsize = strlen(++cp);
+
+      new = opt_malloc(sizeof(struct edns0_option));
+      new->len = hexsize/2; //base16
+      new->code = (short) code;
+      new->data = opt_malloc(new->len);
+
+      for (unsigned i = 0; i < hexsize; i++)
+    {
+      char byte = cp[i];
+
+      if (!isxdigit(byte))
+        ret_err(gen_err);
+
+      if (byte >= '0' && byte <= '9') byte -= '0';
+      else if (byte >= 'a' && byte <='f') byte -= 'a' + 10;
+      else if (byte >= 'A' && byte <='F') byte -= 'A' + 10;
+
+      new->data[i/2] += ((i % 2) ? byte : (byte << 4));
+    }
+
+      new->next = daemon->edns0opts;
+      daemon->edns0opts = new;
+      // printf("New edns0 option: {%d: 0x%s}\n", code, cp);
+      break;
+    }
 
     case 'u':  /* --user */
       daemon->username = opt_string_alloc(arg);

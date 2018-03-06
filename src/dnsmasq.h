@@ -251,7 +251,8 @@ struct event_desc {
 #define OPT_MAC_B64        54
 #define OPT_MAC_HEX        55
 #define OPT_TFTP_APREF_MAC 56
-#define OPT_LAST           57
+#define OPT_EDNS0          57
+#define OPT_LAST           58
 
 /* extra flags for my_syslog, we use a couple of facilities since they are known 
    not to occupy the same bits as priorities, no matter how syslog.h is set up. */
@@ -573,6 +574,17 @@ struct resolvc {
 #ifdef HAVE_INOTIFY
   int wd; /* inotify watch descriptor */
   char *file; /* pointer to file part if path */
+#endif
+};
+
+/* edns0 options parms from command-line */
+struct edns0_option {
+  struct edns0_option *next;
+  size_t len;
+  unsigned char *data;
+  short code;
+#ifdef HAVE_INOTIFY
+  int wd; /* inotify watch descriptor */
 #endif
 };
 
@@ -986,6 +998,7 @@ extern struct daemon {
   unsigned long local_ttl, neg_ttl, max_ttl, min_cache_ttl, max_cache_ttl, auth_ttl, dhcp_ttl, use_dhcp_ttl;
   char *dns_client_id;
   struct hostsfile *addn_hosts;
+  struct edns0_option *edns0opts;
   struct dhcp_context *dhcp, *dhcp6;
   struct ra_interface *ra_interfaces;
   struct dhcp_config *dhcp_conf;

@@ -23,7 +23,7 @@ if which git >/dev/null 2>&1 && \
     git describe | sed 's/^v//'
 elif grep '\$Format:%d\$' $1/VERSION >/dev/null 2>&1; then
     # unsubstituted VERSION, but no git available.
-    echo UNKNOWN
+    echo "v2.79rc1-13-g1c75473"
 else
      vers=`cat $1/VERSION | sed 's/[(), ]/,/ g' | tr ',' '\n' | grep ^v[0-9]`
 

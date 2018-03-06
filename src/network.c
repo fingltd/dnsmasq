@@ -875,6 +875,9 @@ int tcp_interface(int fd, int af)
 	}
     }
 #endif /* IPV6 */
+#else
+  (void) fd;
+  (void) af;
 #endif /* Linux */
  
   return if_index;
@@ -1224,6 +1227,8 @@ int local_bind(int fd, union mysockaddr *addr, char *intname, unsigned int ifind
   if (intname[0] != 0 &&
       setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, intname, IF_NAMESIZE) == -1)
     return 0;
+#else
+    (void) intname;
 #endif
 
   return 1;
