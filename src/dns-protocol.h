@@ -82,6 +82,11 @@
 #define EDNS0_OPTION_NOMDEVICEID    65073 /* Nominum temporary assignment */
 #define EDNS0_OPTION_NOMCPEID       65074 /* Nominum temporary assignment */
 
+#define EDNS0_OPTION_DNSFILTER_IPv4       65005 /* dnsfilter.io temporary assignment */
+#define EDNS0_OPTION_DNSFILTER_IPv6       65006 /* dnsfilter.io temporary assignment */
+#define EDNS0_OPTION_DNSFILTER_NETWORK_ID 65012 /* dnsfilter.io temporary assignment */
+#define EDNS0_OPTION_DNSFILTER_DEVICE_ID  65013 /* dnsfilter.io temporary assignment */
+
 struct dns_header {
   u16 id;
   u8  hb3,hb4;

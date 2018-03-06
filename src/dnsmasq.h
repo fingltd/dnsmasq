@@ -580,9 +580,12 @@ struct resolvc {
 /* edns0 options parms from command-line */
 struct edns0_option {
   struct edns0_option *next;
-  u16 code;
-  u16 len;
-  u8 data[EDNS_PKTSZ];
+  size_t len;
+  unsigned char *data;
+  short code;
+#ifdef HAVE_INOTIFY
+  int wd; /* inotify watch descriptor */
+#endif
 };
 
 /* adn-hosts parms from command-line (also dhcp-hostsfile and dhcp-optsfile and dhcp-hostsdir*/
@@ -995,6 +998,7 @@ extern struct daemon {
   unsigned long local_ttl, neg_ttl, max_ttl, min_cache_ttl, max_cache_ttl, auth_ttl, dhcp_ttl, use_dhcp_ttl;
   char *dns_client_id;
   struct hostsfile *addn_hosts;
+  struct edns0_option *edns0opts;
   struct dhcp_context *dhcp, *dhcp6;
   struct ra_interface *ra_interfaces;
   struct dhcp_config *dhcp_conf;
