@@ -444,6 +444,9 @@ size_t add_edns0_config(struct dns_header *header, size_t plen, unsigned char *l
       plen = add_source_addr(header, plen, limit, source); 
       *check_subnet = 1;
     }
-	  
+
+  for (struct edns0_option *e = daemon->edns0opts; e; e = e->next)
+    plen = add_pseudoheader(header, plen, limit, PACKETSZ, e->code, e->data, e->len, 0, 1);
+
   return plen;
 }

@@ -1,48 +1,48 @@
-name: dnsmasqd
+name: dnsfwd
 version: 2.79
-summary: A lightweight DHCP and caching DNS server.  
+summary: A lightweight DHCP and caching DNS server.
 description: |
-  dnsmasq is a lightweight DNS, TFTP, PXE, router advertisement 
-  and DHCP server. It is intended to provide coupled DNS and DHCP 
+  dnsfwd is a lightweight DNS, TFTP, PXE, router advertisement
+  and DHCP server. It is intended to provide coupled DNS and DHCP
   service to a LAN.
 architectures: [armhf]
 grade: stable
 confinement: strict
+
+slots:
+  content:
+    content: writable-data
+    write:
+      - $SNAP_DATA
+
+hooks:
+  configure:
+    plugs: [snapd-control]
 
 parts:
   dnsmasq:
     plugin: cmake
     source: ../..
     configflags:
-      - -DCMAKE_SNAP=dnsmasqd  # N.B. Snap Namw
-      - -DCMAKE_VERBOSE_MAKEFILE=0
+      - -DCMAKE_SNAP=dnsfwd  # N.B. Snap Name
+      - -DCMAKE_VERBOSE_MAKEFILE=OFF
       - -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc-4.9
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DDNSMASQ_CONF_PORT=53
-      - -DDNSMASQ_CONF_SERVER_1=103.247.36.36
-      - -DDNSMASQ_CONF_SERVER_2=103.247.37.37
-      - -DDNSMASQ_CONF_NO_DAEMON=no-daemon
-      - -DDNSMASQ_CONF_NO_RESOLV=no-resolv
-      - -DDNSMASQ_CONF_LOG_QUERIES=log-queries
+      - -DDNSFWD_CONF_FILE=/var/snap/dnsfwd/common/
     build-packages:
       - gcc
       - cmake
 
 apps:
   dnsmasqd:
-    daemon: simple
-    command: dnsmasq -q -R -C "$SNAP/etc/dnsmasq.conf" -7 "$SNAP_COMMON/etc/dnsmasq.d" 
+    daemon: forking
+    command: dnsfwd -C "$SNAP/etc/dnsfwd.conf"
     stop-timeout: 10s
-    restart-condition:
-       always
+    restart-condition: always
+    slots:
+      - content
     plugs:
       - network
       - network-bind
       - network-control
-      - account-control
-      - firewall-control
-      - log-observe
       - process-control
-      - system-observe
       - snapd-control
-

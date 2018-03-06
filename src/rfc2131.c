@@ -388,8 +388,8 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 		for (o2 = offset + 5; o2 < offset + len + 5; o2 += elen + 1)
 		  { 
 		    elen = option_uint(opt, o2, 1);
-		    if ((o2 + elen + 1 <= option_len(opt)) &&
-			(match = match_bytes(o, option_ptr(opt, o2 + 1), elen)))
+		    if ((o2 + elen + 1 <= (unsigned)(option_len(opt))) &&
+			(match = (unsigned int) match_bytes(o, option_ptr(opt, o2 + 1), elen)))
 		      break;
 		  }
 	      if (match) 
