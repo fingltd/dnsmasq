@@ -126,6 +126,10 @@ int create_helper(int event_fd, int err_fd, uid_t uid, gid_t gid, long max_fd)
 	  _exit(0);
 	}
     }
+
+#else
+    (void)uid;
+    (void)gid;
 #endif
   /* close all the sockets etc, we don't need them here. 
      Don't close err_fd, in case the lua-init fails.
