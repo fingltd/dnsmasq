@@ -18,7 +18,7 @@ slots:
 
 hooks:
   install:
-    plugs: []
+    plugs: [account-control]
   configure:
     plugs: [network]
 
@@ -28,7 +28,7 @@ parts:
     source: SNAPDIR/../..
     configflags:
       - -DCMAKE_PROJECT_NAME=SNAPNAME  # N.B. Snap Namw
-      - -DCMAKE_VERBOSE_MAKEFILE=OFF
+      - -DCMAKE_SNAP=ON
       - -DCMAKE_C_COMPILER=GCC
     build-packages:
       - gcc
@@ -36,13 +36,14 @@ parts:
 
 apps:
   SNAPNAME:
-    daemon: simple
-    command: SNAPNAME -d -C "${SNAP_DATA}/etc/SNAPNAME.conf" 
+    daemon: forking
+    command: SNAPNAME -C "${SNAP_DATA}/etc/SNAPNAME.conf" 
     stop-timeout: 10s
     restart-condition: always
     slots:
       - content
     plugs:
+      - account-control
       - network
       - network-bind
       - network-control
