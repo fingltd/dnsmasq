@@ -27,7 +27,7 @@ parts:
     plugin: cmake
     source: SNAPDIR/../..
     configflags:
-      - -DCMAKE_PROJECT_CONFIGURATION_DIR=/var/snap/SNAPNAME/common
+      - -DCMAKE_PROJECT_CONFIGURATION_DIR=/var/snap/SNAPNAME/common/conf
       - -DCMAKE_PROJECT_NAME=SNAPNAME  # N.B. Snap Namw
       - -DCMAKE_SNAP=ON
       - -DCMAKE_C_COMPILER=GCC
