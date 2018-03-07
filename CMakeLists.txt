@@ -20,7 +20,7 @@ list(GET VERSION_LIST 4 DNSMASQ_VERSION_COMMIT)
 add_definitions(-DVERSION="${DNSMASQ_VERSION_MAJOR}.${DNSMASQ_VERSION_MINOR}")
 
 message(STATUS "Project Name: ${CMAKE_PROJECT_NAME}")
-message(STATUS "Configuration File: ${CMAKE_PROJECT_CONF_FILE}")
+message(STATUS "Configuration Directory: ${CMAKE_PROJECT_CONFIGURATION_DIR}")
 
 set(CMAKE_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/sbin)
 set(CMAKE_INSTALL_SYSCONFDIR ${CMAKE_INSTALL_PREFIX}/etc)
@@ -89,14 +89,14 @@ set(SOURCE_FILES
         src/tftp.c
         src/util.c)
 
-add_executable(dnsfwd ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-configure_file(dnsmasq.conf.in ${CMAKE_CURRENT_BINARY_DIR}/dnsfwd.conf @ONLY )
+configure_file(dnsmasq.conf.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.conf @ONLY )
 
-execute_process(COMMAND sed -i -e "s/#.*$//" dnsfwd.conf WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-execute_process(COMMAND sed -i -e "/^$/d" dnsfwd.conf WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+execute_process(COMMAND sed -i -e "s/#.*$//" ${PROJECT_NAME}.conf WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+execute_process(COMMAND sed -i -e "/^$/d" ${PROJECT_NAME}.conf WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dnsfwd.conf
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.conf
         DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 install(TARGETS ${PROJECT_NAME}
