@@ -1502,7 +1502,9 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 
   if (option == '?')
     ret_err(gen_err);
-  
+
+  my_syslog(LOG_INFO, _("Parsing option/%d): %s"), option, arg);
+
   for (i=0; usage[i].opt != 0; i++)
     if (usage[i].opt == option)
       {
