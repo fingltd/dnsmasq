@@ -105,7 +105,7 @@ int create_helper(int event_fd, int err_fd, uid_t uid, gid_t gid, long max_fd)
   sigaction(SIGTERM, &sigact, NULL);
   sigaction(SIGALRM, &sigact, NULL);
   sigaction(SIGINT, &sigact, NULL);
-
+#if !defined(HAVE_SNAP_USER_MANAGER)
   if (!option_bool(OPT_DEBUG) && uid != 0)
     {
       gid_t dummy;
@@ -126,7 +126,7 @@ int create_helper(int event_fd, int err_fd, uid_t uid, gid_t gid, long max_fd)
 	  _exit(0);
 	}
     }
-
+#endif
   /* close all the sockets etc, we don't need them here. 
      Don't close err_fd, in case the lua-init fails.
      Note that we have to do this before lua init

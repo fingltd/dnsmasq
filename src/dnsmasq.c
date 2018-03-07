@@ -592,11 +592,11 @@ int main (int argc, char **argv)
       daemon->helperfd = create_helper(pipewrite, err_pipe[1], script_uid, script_gid, max_fd);
 #endif
 
-  if (!option_bool(OPT_DEBUG) && getuid() == 0)   
+#if !defined(HAVE_SNAP_USER_MANAGER)
+  if (!option_bool(OPT_DEBUG) && getuid() == 0)
     {
       int bad_capabilities = 0;
       gid_t dummy;
-      
       /* remove all supplementary groups */
       if (gp && 
 	  (setgroups(0, &dummy) == -1 ||
@@ -605,7 +605,7 @@ int main (int argc, char **argv)
 	  send_event(err_pipe[1], EVENT_GROUP_ERR, errno, daemon->groupname);
 	  _exit(0);
 	}
-  
+
       if (ent_pw && ent_pw->pw_uid != 0)
 	{     
 #if defined(HAVE_LINUX_NETWORK)	  
@@ -679,6 +679,7 @@ int main (int argc, char **argv)
 	  
 	}
     }
+#endif
   
 #ifdef HAVE_LINUX_NETWORK
   free(hdr);
