@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(dnsfwd C)
+project(${CMAKE_PROJECT_NAME} C)
+set(CMAKE_C_STANDARD 99)
 
 execute_process(COMMAND bld/get-version ${CMAKE_CURRENT_SOURCE_DIR} 
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -17,6 +18,9 @@ list(GET VERSION_LIST 3 DNSMASQ_VERSION_PATCH)
 list(GET VERSION_LIST 4 DNSMASQ_VERSION_COMMIT)
 
 add_definitions(-DVERSION="${DNSMASQ_VERSION_MAJOR}.${DNSMASQ_VERSION_MINOR}")
+
+message(STATUS "Project Name: ${CMAKE_PROJECT_NAME}")
+message(STATUS "Configuration File: ${CMAKE_PROJECT_CONF_FILE}")
 
 set(CMAKE_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/sbin)
 set(CMAKE_INSTALL_SYSCONFDIR ${CMAKE_INSTALL_PREFIX}/etc)
@@ -35,11 +39,7 @@ set(CMAKE_C_FLAGS_RELEASE "-O2")
 #find_package(Nettle)
 #find_package(Gmp)
 
-set(CMAKE_C_STANDARD 99)
-
-if (CMAKE_SNAP)
-    add_definitions(-DRUNFILE=NULL)
-endif (CMAKE_SNAP)
+add_definitions(-DRUNFILE=NULL)
 
 set(SOURCE_FILES
         src/arp.c
