@@ -39,7 +39,10 @@ set(CMAKE_C_FLAGS_RELEASE "-O2")
 #find_package(Nettle)
 #find_package(Gmp)
 
-add_definitions(-DRUNFILE=NULL)
+if(CMAKE_SNAP)
+	add_definitions(-DRUNFILE=NULL)
+	add_definitions(-DHAVE_SNAP_USER_MANAGER)
+endif()
 
 set(SOURCE_FILES
         src/arp.c
