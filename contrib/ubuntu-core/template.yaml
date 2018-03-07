@@ -1,38 +1,48 @@
-name: NAME 
-version: 2.79
+name: SNAPNAME 
+version: SNAPVERSION
 summary: A lightweight DHCP and caching DNS server.  
 description: |
-  NAME is a lightweight DNS, TFTP, PXE, router advertisement 
+  SNAPNAME is a lightweight DNS, TFTP, PXE, router advertisement 
   and DHCP server. It is intended to provide coupled DNS and DHCP 
   service to a LAN.
-architectures: [armhf]
+architectures: 
+  - TYPE
 grade: stable
 confinement: strict
 
+slots:
+  content:
+    content: writable-data
+    write:
+      - $SNAP_COMMON/conf
+
+hooks:
+  install:
+    plugs: []
+  configure:
+    plugs: [network]
+
 parts:
-  NAME:
+  SNAPNAME:
     plugin: cmake
-    source: SNAP_DIR/../..
+    source: SNAPDIR/../..
     configflags:
-      - -DCMAKE_SNAP=dnsmasqd  # N.B. Snap Namw
-      - -DCMAKE_VERBOSE_MAKEFILE=0
-      - -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc-4.9
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DDNSFWD_CONF_PORT=53
+      - -DCMAKE_PROJECT_NAME=SNAPNAME  # N.B. Snap Namw
+      - -DCMAKE_VERBOSE_MAKEFILE=OFF
+      - -DCMAKE_C_COMPILER=GCC
     build-packages:
       - gcc
       - cmake
 
 apps:
-  NAME:
+  SNAPNAME:
     daemon: simple
-    command: NAME -C "$SNAP/etc/NAME.conf" 
+    command: SNAPNAME -d -C "${SNAP_DATA}/etc/SNAPNAME.conf" 
     stop-timeout: 10s
-    restart-condition:  always
+    restart-condition: always
+    slots:
+      - content
     plugs:
       - network
       - network-bind
       - network-control
-      - process-control
-      - snapd-control
-
