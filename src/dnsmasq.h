@@ -1240,6 +1240,7 @@ int parse_hex(char *in, unsigned char *out, int maxlen,
 int memcmp_masked(unsigned char *a, unsigned char *b, int len, 
 		  unsigned int mask);
 int expand_buf(struct iovec *iov, size_t size);
+char *print_bytearray(char *buff, unsigned char *data, int len);
 char *print_mac(char *buff, unsigned char *mac, int len);
 int read_write(int fd, unsigned char *packet, int size, int rw);
 
