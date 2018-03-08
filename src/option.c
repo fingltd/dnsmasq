@@ -2263,6 +2263,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
       struct edns0_option *new;
       size_t hexsize;
       char* cp;
+      u8 byte;
       int code;
 
       for (cp = arg; *cp; cp++)
@@ -2285,21 +2286,19 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 
       for (unsigned i = 0; i < hexsize; i++)
     {
-      char byte = cp[i];
-
-      if (!isxdigit(byte))
+      if (!isxdigit(cp[i]))
         ret_err(gen_err);
 
-      if (byte >= '0' && byte <= '9') byte -= '0';
-      else if (byte >= 'a' && byte <='f') byte -= 'a' + 10;
-      else if (byte >= 'A' && byte <='F') byte -= 'A' + 10;
-
-      new->data[i/2] += ((i % 2) ? byte : (byte << 4));
+      if (i%2) new->data[i/2] = (byte << 4) + CHAR2HEX(cp[i]);
+      else byte = CHAR2HEX(cp[i]);
     }
 
       new->next = daemon->edns0opts;
       daemon->edns0opts = new;
-      //printf("New edns0 option: {%hu: 0x%s}\n", new->code, cp);
+
+      // printf("New edns0 option: {%hu}\n", new->code);
+      // for (int i = 0; i < new->len; i++) printf("%c%c - %x\n", cp[i*2], cp[i*2+1], new->data[i]);
+
       break;
     }
 
