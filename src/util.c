@@ -592,6 +592,20 @@ int expand_buf(struct iovec *iov, size_t size)
   return 1;
 }
 
+char* print_bytearray(char* buff, unsigned char* data, int len)
+{
+  char* p = buff;
+  int i;
+
+  if (len == 0)
+    sprintf(p, "<null>");
+  else
+    for (i = 0; i < len; i++)
+        p += sprintf(p, "%.2x", data[i]);
+
+  return buff;
+}
+
 char *print_mac(char *buff, unsigned char *mac, int len)
 {
   char *p = buff;

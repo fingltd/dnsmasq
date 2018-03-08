@@ -445,8 +445,16 @@ size_t add_edns0_config(struct dns_header *header, size_t plen, unsigned char *l
       *check_subnet = 1;
     }
 
-  for (struct edns0_option *e = daemon->edns0opts; e; e = e->next)
+  for (struct edns0_option *e = daemon->edns0opts; e; e = e->next) {
     plen = add_pseudoheader(header, plen, limit, PACKETSZ, e->code, e->data, e->len, 0, 1);
+
+    if (option_bool(OPT_LOG)) {
+      char* buff = malloc(e->len*2 + 1);
+      my_syslog (LOG_INFO, _("Added EDNS0 opt(%u): %s"), e->code, print_bytearray(buff, e->data, e->len));
+      free(buff);
+    }
+
+  }
 
   return plen;
 }
