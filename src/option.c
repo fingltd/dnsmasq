@@ -2295,10 +2295,6 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 
       new->next = daemon->edns0opts;
       daemon->edns0opts = new;
-
-      //printf("New edns0 option: {%hu}\n", new->code);
-      //for (int i = 0; i < new->len; i++) printf("%c%c - %x\n", cp[i*2], cp[i*2+1], new->data[i]);
-
       break;
     }
 
