@@ -18,7 +18,7 @@ slots:
 
 hooks:
   install:
-    plugs: [account-control]
+    plugs: [network]
   configure:
     plugs: [network]
 
@@ -44,7 +44,6 @@ apps:
     slots:
       - content
     plugs:
-      - account-control
       - network
       - network-bind
       - network-control
