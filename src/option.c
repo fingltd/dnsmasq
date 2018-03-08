@@ -2289,15 +2289,15 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
       if (!isxdigit(cp[i]))
         ret_err(gen_err);
 
-      if (i%2) new->data[i/2] = (byte << 4) + CHAR2HEX(cp[i]);
-      else byte = CHAR2HEX(cp[i]);
+      if (i%2) new->data[i/2] = (byte << 4) + char2hex(cp[i]);
+      else byte = char2hex(cp[i]);
     }
 
       new->next = daemon->edns0opts;
       daemon->edns0opts = new;
 
-      // printf("New edns0 option: {%hu}\n", new->code);
-      // for (int i = 0; i < new->len; i++) printf("%c%c - %x\n", cp[i*2], cp[i*2+1], new->data[i]);
+      //printf("New edns0 option: {%hu}\n", new->code);
+      //for (int i = 0; i < new->len; i++) printf("%c%c - %x\n", cp[i*2], cp[i*2+1], new->data[i]);
 
       break;
     }

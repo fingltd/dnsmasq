@@ -66,6 +66,7 @@ typedef unsigned long long u64;
 
 #define countof(x)      (long)(sizeof(x) / sizeof(x[0]))
 #define MIN(a,b)        ((a) < (b) ? (a) : (b))
+#define char2hex(x)     ((u8) (((x) >= '0' && (x) <= '9') ? ((x) - '0') : (toupper(x) - 'A' + 10)))
 
 #include "dns-protocol.h"
 #include "dhcp-protocol.h"
@@ -1240,10 +1241,6 @@ int parse_hex(char *in, unsigned char *out, int maxlen,
 int memcmp_masked(unsigned char *a, unsigned char *b, int len, 
 		  unsigned int mask);
 int expand_buf(struct iovec *iov, size_t size);
-
-#define HEX2CHAR(x) ((char) ((((x) & 0xF) < 10) ? (((x) & 0xF) + '0') : (((x) & 0xF) + 'A')))
-#define CHAR2HEX(x) ((u8) (((x) >= '0' && (x) <= '9') ? ((x) - '0') : (toupper(x) - 'A' + 10)))
-
 char *print_mac(char *buff, unsigned char *mac, int len);
 int read_write(int fd, unsigned char *packet, int size, int rw);
 
