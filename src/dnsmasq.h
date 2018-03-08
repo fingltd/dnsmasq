@@ -581,7 +581,7 @@ struct resolvc {
 struct edns0_option {
   struct edns0_option *next;
   size_t len;
-  unsigned char *data;
+  u8 *data;
   short code;
 #ifdef HAVE_INOTIFY
   int wd; /* inotify watch descriptor */
@@ -1240,7 +1240,10 @@ int parse_hex(char *in, unsigned char *out, int maxlen,
 int memcmp_masked(unsigned char *a, unsigned char *b, int len, 
 		  unsigned int mask);
 int expand_buf(struct iovec *iov, size_t size);
-char *print_bytearray(char *buff, unsigned char *data, int len);
+
+#define HEX2CHAR(x) ((char) ((((x) & 0xF) < 10) ? (((x) & 0xF) + '0') : (((x) & 0xF) + 'A')))
+#define CHAR2HEX(x) ((u8) (((x) >= '0' && (x) <= '9') ? ((x) - '0') : (toupper(x) - 'A' + 10)))
+
 char *print_mac(char *buff, unsigned char *mac, int len);
 int read_write(int fd, unsigned char *packet, int size, int rw);
 
