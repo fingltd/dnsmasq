@@ -450,19 +450,17 @@ size_t add_edns0_config(struct dns_header *header, size_t plen, unsigned char *l
 
     if (option_bool(OPT_LOG))
     {
-      static char buff[PACKETSZ];
-      char* p = buff;
       size_t i, size = e->len * 2;
       if (size < PACKETSZ)
       {
+        char *str = malloc(size + 1);
         for (i = 0; i < size; i++)
         {
-          u8 byte = i%2 ? e->data[i] : e->data[i] >> 4;
-          p[i] = HEX2CHAR(byte);
-          printf("%x - %c\n", byte, p[i]);
+          u8 byte = (u8) (((i % 2) ? (e->data[i / 2] ) : ((e->data[i / 2] << 4))) & 0xF);
+          str[i] = (char) ((0 < byte && byte < 9) ? byte + '0' : byte + 'a');
         }
-        p[size] = '\0';
-        my_syslog (LOG_INFO, _("added edns0 opt[%hu]: %s"), e->code, p);
+        str[size] = '\0';
+        my_syslog (LOG_INFO, _("added edns0 opt[%hu]: %s"), e->code, str);
 
       }
     }
