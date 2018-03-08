@@ -450,7 +450,7 @@ size_t add_edns0_config(struct dns_header *header, size_t plen, unsigned char *l
 
     if (option_bool(OPT_LOG)) {
       char* buff = malloc(e->len*2 + 1);
-      my_syslog (LOG_INFO, _("Added EDNS0 opt(%u): %s"), e->code, print_bytearray(buff, e->data, e->len));
+      my_syslog (LOG_INFO, _("added edns0 opt[%hu]: %s"), e->code, print_bytearray(buff, e->data, e->len));
       free(buff);
     }
 

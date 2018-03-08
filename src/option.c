@@ -2279,7 +2279,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
       hexsize = strlen(++cp);
 
       new = opt_malloc(sizeof(struct edns0_option));
-      new->len = hexsize/2; //base16
+      new->len = hexsize/2; // base16
       new->code = (short) code;
       new->data = opt_malloc(new->len);
 
@@ -2299,7 +2299,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 
       new->next = daemon->edns0opts;
       daemon->edns0opts = new;
-      // printf("New edns0 option: {%d: 0x%s}\n", code, cp);
+      //printf("New edns0 option: {%hu: 0x%s}\n", new->code, cp);
       break;
     }
 
