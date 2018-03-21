@@ -2255,12 +2255,11 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	    set_option_bool(OPT_MAC_HEX);
       else if (strncmp(arg, "xor", 3) == 0)
       {
-        u8 byte;
+        u8 byte = 0x00;
         char *cp = arg + 4;
         size_t hexsize = strlen(cp);
         if (hexsize != ETHER_ADDR_LEN * 2) // base16
           ret_err(_("bad format"));
-        set_option_bool(OPT_MAC_XOR);
         for (unsigned i = 0; i < hexsize; i++)
         {
           if (!isxdigit(cp[i]))
@@ -2268,6 +2267,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
           if (i%2) daemon->mac_xor_cipher[i/2] = (byte << 4) + char2hex(cp[i]);
           else byte = char2hex(cp[i]);
         }
+        set_option_bool(OPT_ADD_MAC_XOR);
       }
 	  else
 	    ret_err(gen_err);
