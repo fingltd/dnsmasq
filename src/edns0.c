@@ -438,7 +438,7 @@ size_t add_edns0_config(struct dns_header *header, size_t plen, unsigned char *l
   if (option_bool(OPT_ADD_MAC))
     plen  = add_mac(header, plen, limit, source, now);
   
-  if (option_bool(OPT_MAC_B64) || option_bool(OPT_MAC_HEX))
+  if (option_bool(OPT_MAC_B64) || option_bool(OPT_MAC_HEX) || option_bool(OPT_MAC_XOR))
     plen = add_dns_client(header, plen, limit, source, now);
 
   if (daemon->dns_client_id)
