@@ -253,7 +253,7 @@ struct event_desc {
 #define OPT_MAC_HEX        55
 #define OPT_TFTP_APREF_MAC 56
 #define OPT_EDNS0          57
-#define OPT_MAC_XOR        58
+#define OPT_ADD_MAC_XOR    58
 #define OPT_LAST           59
 
 /* extra flags for my_syslog, we use a couple of facilities since they are known 
