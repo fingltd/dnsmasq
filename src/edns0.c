@@ -276,6 +276,12 @@ static size_t add_dns_client(struct dns_header *header, size_t plen, unsigned ch
 
       if (option_bool(OPT_MAC_HEX))
 	print_mac(encode, mac, maclen);
+      else if (option_bool(OPT_ADD_MAC_XOR))
+    {
+      for (unsigned i = 0; i < ETHER_ADDR_LEN; i++)
+        encode[i] = mac[i] ^ daemon->mac_xor_cipher[i];
+      encode[ETHER_ADDR_LEN + 1] = 0;
+    }
       else
 	{
 	  encoder(mac, encode);
