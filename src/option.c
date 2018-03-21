@@ -2260,7 +2260,6 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
         size_t hexsize = strlen(cp);
         if (hexsize != ETHER_ADDR_LEN * 2) // base16
           ret_err(_("bad format"));
-        set_option_bool(OPT_MAC_XOR);
         for (unsigned i = 0; i < hexsize; i++)
         {
           if (!isxdigit(cp[i]))

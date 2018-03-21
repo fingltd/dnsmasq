@@ -276,12 +276,6 @@ static size_t add_dns_client(struct dns_header *header, size_t plen, unsigned ch
 
       if (option_bool(OPT_MAC_HEX))
 	print_mac(encode, mac, maclen);
-      else if (option_bool(OPT_ADD_MAC_XOR))
-    {
-      for (unsigned i = 0; i < ETHER_ADDR_LEN; i++)
-        encode[i] = mac[i] ^ daemon->mac_xor_cipher[i];
-      encode[ETHER_ADDR_LEN + 1] = 0;
-    }
       else
 	{
 	  encoder(mac, encode);
@@ -306,7 +300,6 @@ static size_t add_mac(struct dns_header *header, size_t plen, unsigned char *lim
       for (unsigned i = 0; i < ETHER_ADDR_LEN; i++)
         mac[i] ^= daemon->mac_xor_cipher[i];
     }
-
     plen = add_pseudoheader(header, plen, limit, PACKETSZ, EDNS0_OPTION_MAC, mac, maclen, 0, 0);
 
   }
@@ -446,7 +439,7 @@ size_t add_edns0_config(struct dns_header *header, size_t plen, unsigned char *l
   if (option_bool(OPT_ADD_MAC) || option_bool(OPT_ADD_MAC_XOR))
     plen  = add_mac(header, plen, limit, source, now);
   
-  if (option_bool(OPT_MAC_B64) || option_bool(OPT_MAC_HEX) || option_bool(OPT_MAC_XOR))
+  if (option_bool(OPT_MAC_B64) || option_bool(OPT_MAC_HEX))
     plen = add_dns_client(header, plen, limit, source, now);
 
   if (daemon->dns_client_id)
