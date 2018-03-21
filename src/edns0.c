@@ -270,18 +270,12 @@ static size_t add_dns_client(struct dns_header *header, size_t plen, unsigned ch
   unsigned char mac[DHCP_CHADDR_MAX];
   char encode[18]; /* handle 6 byte MACs */
 
-  if ((maclen = find_mac(l3, mac, 1, now)) == ETHER_ADDR_LEN)
+    if ((maclen = find_mac(l3, mac, 1, now)) == ETHER_ADDR_LEN)
     {
       replace = 1;
 
       if (option_bool(OPT_MAC_HEX))
 	print_mac(encode, mac, maclen);
-      else if (option_bool(OPT_MAC_XOR))
-    {
-      for (unsigned i = 0; i < ETHER_ADDR_LEN; i++)
-        encode[i] = mac[i] ^ daemon->mac_xor_cipher[i];
-      encode[ETHER_ADDR_LEN + 1] = 0;
-    }
       else
 	{
 	  encoder(mac, encode);
@@ -299,10 +293,21 @@ static size_t add_mac(struct dns_header *header, size_t plen, unsigned char *lim
   int maclen;
   unsigned char mac[DHCP_CHADDR_MAX];
 
-  if ((maclen = find_mac(l3, mac, 1, now)) != 0)
-    plen = add_pseudoheader(header, plen, limit, PACKETSZ, EDNS0_OPTION_MAC, mac, maclen, 0, 0); 
-    
-  return plen; 
+
+  if ((maclen = find_mac(l3, mac, 1, now)) == ETHER_ADDR_LEN)
+  {
+  my_syslog(LOG_INFO, _("Add MAC %s . Len: %d"), option_bool(OPT_ADD_MAC_XOR) ? "xor" : "plain", maclen);
+  printf(_("Add MAC %s . Len: %d"), option_bool(OPT_ADD_MAC_XOR) ? "xor" : "plain", maclen);
+    if (option_bool(OPT_ADD_MAC_XOR))
+    {
+      for (unsigned i = 0; i < ETHER_ADDR_LEN; i++)
+        mac[i] ^= daemon->mac_xor_cipher[i];
+    }
+    else
+      plen = add_pseudoheader(header, plen, limit, PACKETSZ, EDNS0_OPTION_MAC, mac, 6, 0, 0);
+
+  }
+  return plen;
 }
 
 struct subnet_opt {
@@ -435,10 +440,10 @@ size_t add_edns0_config(struct dns_header *header, size_t plen, unsigned char *l
 {
   *check_subnet = 0;
 
-  if (option_bool(OPT_ADD_MAC))
+  if (option_bool(OPT_ADD_MAC) || option_bool(OPT_ADD_MAC_XOR))
     plen  = add_mac(header, plen, limit, source, now);
   
-  if (option_bool(OPT_MAC_B64) || option_bool(OPT_MAC_HEX) || option_bool(OPT_MAC_XOR))
+  if (option_bool(OPT_MAC_B64) || option_bool(OPT_MAC_HEX))
     plen = add_dns_client(header, plen, limit, source, now);
 
   if (daemon->dns_client_id)
