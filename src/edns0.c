@@ -270,12 +270,18 @@ static size_t add_dns_client(struct dns_header *header, size_t plen, unsigned ch
   unsigned char mac[DHCP_CHADDR_MAX];
   char encode[18]; /* handle 6 byte MACs */
 
-  if ((maclen = find_mac(l3, mac, 1, now)) == 6)
+  if ((maclen = find_mac(l3, mac, 1, now)) == ETHER_ADDR_LEN)
     {
       replace = 1;
 
       if (option_bool(OPT_MAC_HEX))
 	print_mac(encode, mac, maclen);
+      else if (option_bool(OPT_MAC_XOR))
+    {
+      for (unsigned i = 0; i < ETHER_ADDR_LEN; i++)
+        encode[i] = mac[i] ^ daemon->mac_xor_cipher[i];
+      encode[ETHER_ADDR_LEN + 1] = 0;
+    }
       else
 	{
 	  encoder(mac, encode);

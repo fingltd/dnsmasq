@@ -253,7 +253,8 @@ struct event_desc {
 #define OPT_MAC_HEX        55
 #define OPT_TFTP_APREF_MAC 56
 #define OPT_EDNS0          57
-#define OPT_LAST           58
+#define OPT_MAC_XOR        58
+#define OPT_LAST           59
 
 /* extra flags for my_syslog, we use a couple of facilities since they are known 
    not to occupy the same bits as priorities, no matter how syslog.h is set up. */
@@ -997,6 +998,7 @@ extern struct daemon {
   int cachesize, ftabsize;
   int port, query_port, min_port, max_port;
   unsigned long local_ttl, neg_ttl, max_ttl, min_cache_ttl, max_cache_ttl, auth_ttl, dhcp_ttl, use_dhcp_ttl;
+  unsigned char mac_xor_cipher[ETHER_ADDR_LEN];
   char *dns_client_id;
   struct hostsfile *addn_hosts;
   struct edns0_option *edns0opts;
