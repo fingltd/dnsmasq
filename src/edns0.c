@@ -293,18 +293,15 @@ static size_t add_mac(struct dns_header *header, size_t plen, unsigned char *lim
   int maclen;
   unsigned char mac[DHCP_CHADDR_MAX];
 
-
   if ((maclen = find_mac(l3, mac, 1, now)) == ETHER_ADDR_LEN)
   {
-  my_syslog(LOG_INFO, _("Add MAC %s . Len: %d"), option_bool(OPT_ADD_MAC_XOR) ? "xor" : "plain", maclen);
-  printf(_("Add MAC %s . Len: %d"), option_bool(OPT_ADD_MAC_XOR) ? "xor" : "plain", maclen);
     if (option_bool(OPT_ADD_MAC_XOR))
     {
       for (unsigned i = 0; i < ETHER_ADDR_LEN; i++)
         mac[i] ^= daemon->mac_xor_cipher[i];
     }
-    else
-      plen = add_pseudoheader(header, plen, limit, PACKETSZ, EDNS0_OPTION_MAC, mac, 6, 0, 0);
+
+    plen = add_pseudoheader(header, plen, limit, PACKETSZ, EDNS0_OPTION_MAC, mac, maclen, 0, 0);
 
   }
   return plen;
