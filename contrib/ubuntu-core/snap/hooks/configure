@@ -20,6 +20,7 @@ case "$(snapctl get ${SERVICE_NAME}-lifecycle-action)" in
             snapctl stop ${SNAP_NAME}.${SERVICE_NAME} 2>&1 || true
             ;;
         restart)
+            snapctl stop ${SNAP_NAME}.${SERVICE_NAME} 2>&1 || true
             snapctl start ${SNAP_NAME}.${SERVICE_NAME} 2>&1 || true
             ;;
         *)
