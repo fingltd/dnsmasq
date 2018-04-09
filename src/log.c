@@ -42,6 +42,8 @@ static int entries_alloced = 0;
 static int entries_lost = 0;
 static int connection_good = 1;
 static int max_logs = 0;
+static int max_files = 10;
+static int max_size = 65536;
 static int connection_type = SOCK_DGRAM;
 
 struct log_entry {
@@ -190,6 +192,28 @@ static void log_write(void)
 		  my_syslog(LOG_WARNING, _("overflow: %d log entries lost"), e);
 		}	  
 	    }
+      if (log_to_file)
+        {
+          struct stat st;
+          stat(daemon->log_file, &st);
+          if (st.st_size < max_size)
+         continue;
+          close(log_fd);
+          /* rotate */
+          for (int i = max_files-2; i >= 0; --i)
+            {
+              char ithFile[128], nextFile[128];
+              sprintf(ithFile, "%s.%d", daemon->log_file, i);
+              sprintf(ithFile, "%s.%d", daemon->log_file, i+1);
+              if (access(ithFile, F_OK) != -1)
+              {
+                if (access(nextFile, F_OK) != -1)
+              unlink(nextFile);
+                rename(ithFile, nextFile);
+              }
+            }
+          log_fd = -1;
+        }
 	  continue;
 	}
       
