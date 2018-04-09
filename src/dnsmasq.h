@@ -996,6 +996,7 @@ extern struct daemon {
   char *log_file; /* optional log file */
   int max_logs;  /* queue limit */
   int cachesize, ftabsize;
+  time_t last_cache_dump;
   int port, query_port, min_port, max_port;
   unsigned long local_ttl, neg_ttl, max_ttl, min_cache_ttl, max_cache_ttl, auth_ttl, dhcp_ttl, use_dhcp_ttl;
   unsigned char mac_xor_cipher[ETHER_ADDR_LEN];

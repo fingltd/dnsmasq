@@ -98,7 +98,7 @@
 # than the default, edit the following lines.
 #user=
 #group=
-
+user=@CMAKE_USER@
 # If you want dnsmasq to listen for DHCP and DNS requests only on
 # specified interfaces (and the loopback) give the name of the
 # interface (eg eth0) here.
@@ -657,7 +657,7 @@
 
 # Debug mode: don't fork to the background, don't write a pid file, don't change user id, generate a complete cache dump on receipt on SIGUSR1, log to stderr as well as syslog, don't fork new processes to handle TCP queries. 
 #no-daemon
-
+log-facility=@CMAKE_LOG_FILE@
 # Include another lot of configuration options.
 #conf-file=/etc/dnsmasq.more.conf
 #conf-dir=/etc/dnsmasq.d

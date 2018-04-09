@@ -1519,6 +1519,7 @@ void dump_cache(time_t now)
 	    my_syslog(LOG_INFO, "%s", daemon->namebuff);
 	  }
     }
+    daemon->last_cache_dump = now;
 }
 
 char *record_source(unsigned int index)

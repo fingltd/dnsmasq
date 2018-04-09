@@ -999,6 +999,9 @@ int main (int argc, char **argv)
       
       now = dnsmasq_time();
 
+      if (now - daemon->last_cache_dump > CACHE_POLL_INTERVAL)
+    dump_cache(now);
+
       check_log_writer(0);
 
       /* prime. */

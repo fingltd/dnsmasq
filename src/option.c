@@ -18,6 +18,7 @@
 #define SYSLOG_NAMES
 #include "dnsmasq.h"
 #include <setjmp.h>
+#include <libgen.h>
 
 static volatile int mem_recover = 0;
 static jmp_buf mem_jmp;
@@ -1738,7 +1739,16 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
     case '8': /* --log-facility */
       /* may be a filename */
       if (strchr(arg, '/') || strcmp (arg, "-") == 0)
-	daemon->log_file = opt_string_alloc(arg);
+        {
+          struct stat st;
+          memset(&st,0,sizeof(st));
+	      daemon->log_file = opt_string_alloc(arg);
+          char *directory = dirname(daemon->log_file);
+          if (stat(directory, &st) == -1)
+            if (mkdir(directory, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1)
+              die(_("cannot create log directory %s: %s"), directory, EC_FILE);
+        }
+
       else
 	{	  
 #ifdef __ANDROID__
