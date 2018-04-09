@@ -44,6 +44,7 @@ static int connection_good = 1;
 static int max_logs = 0;
 static int max_files = 10;
 static int max_size = 65536;
+static int cur_size = 0;
 static int connection_type = SOCK_DGRAM;
 
 struct log_entry {
@@ -180,6 +181,7 @@ static void log_write(void)
 
       if ((rc = write(log_fd, entries->payload + entries->offset, entries->length - len_adjust)) != -1)
 	{
+      cur_size += rc;
 	  entries->length -= rc;
 	  entries->offset += rc;
 	  if (entries->length == len_adjust)
@@ -194,12 +196,12 @@ static void log_write(void)
 	    }
       if (log_to_file)
         {
-          struct stat st;
-          stat(daemon->log_file, &st);
-          if (st.st_size < max_size)
+          if (cur_size < max_size)
          continue;
           close(log_fd);
+          log_fd = -1;
           /* rotate */
+          my_syslog(LOG_WARNING, _("overflow: %d. Rotate and reopen. Files %d. Size %d."), cur_size, max_files, max_size);
           for (int i = max_files-2; i >= 0; --i)
             {
               char ithFile[128], nextFile[128];
@@ -212,7 +214,8 @@ static void log_write(void)
                 rename(ithFile, nextFile);
               }
             }
-          log_fd = -1;
+          log_fd = log_reopen(daemon->log_file);
+          cur_size = 0;
         }
 	  continue;
 	}
