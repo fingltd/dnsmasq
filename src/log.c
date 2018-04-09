@@ -202,17 +202,16 @@ static void log_write(void)
 	    }
       if (log_to_file)
         {
+          char ithFile[128], nextFile[128];
           if (cur_size < max_size)
          continue;
           close(log_fd);
-          log_fd = -1;
-          /* rotate */
-          my_syslog(LOG_WARNING, _("overflow: %d. Rotate and reopen. Files %d. Size %d."), cur_size, max_files, max_size);
+          log_fd = -1; /* to print rotate line on syslog */
+          my_syslog(LOG_WARNING, _("Overflow: %d. Rotate and reopen. Files %d. Max Size %d."), cur_size, max_files, max_size);
           for (int i = max_files-2; i >= 0; --i)
             {
-              char ithFile[128], nextFile[128];
               sprintf(ithFile, "%s.%d", daemon->log_file, i);
-              sprintf(ithFile, "%s.%d", daemon->log_file, i+1);
+              sprintf(nextFile, "%s.%d", daemon->log_file, i+1);
               if (access(ithFile, F_OK) != -1)
               {
                 if (access(nextFile, F_OK) != -1)
@@ -220,8 +219,9 @@ static void log_write(void)
                 rename(ithFile, nextFile);
               }
             }
-          log_fd = log_reopen(daemon->log_file);
+          rename(daemon->log_file, ithFile);
           cur_size = 0;
+          log_fd = log_reopen(daemon->log_file);
         }
 	  continue;
 	}
