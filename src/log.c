@@ -121,7 +121,13 @@ int log_reopen(char *log_file)
       /* NOTE: umask is set to 022 by the time this gets called */
       
       if (log_file)
-	log_fd = open(log_file, O_WRONLY|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR|S_IRGRP);      
+    {
+      struct stat sb;
+      log_fd = open(log_file, O_WRONLY|O_CREAT|O_APPEND, S_IRUSR|S_IWUSR|S_IRGRP);
+      if (stat(log_file, &sb) == 0)
+        cur_size = sb.st_size;
+
+    }
       else
 	{
 #if defined(HAVE_SOLARIS_NETWORK) || defined(__ANDROID__)
