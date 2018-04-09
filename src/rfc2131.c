@@ -820,7 +820,7 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 		is_same_net(mess->ciaddr, context->start, context->netmask))
 	      break;
 	  
-	  if (!service || !service->basename || !context)
+	  if (!service || !service->pxe_basename || !context)
 	    return 0;
 	  	  
 	  clear_packet(mess, end);
@@ -834,12 +834,12 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 	  else
 	    mess->siaddr = context->local; 
 	  
-	  if (strchr(service->basename, '.'))
+	  if (strchr(service->pxe_basename, '.'))
 	    snprintf((char *)mess->file, sizeof(mess->file),
-		"%s", service->basename);
+		"%s", service->pxe_basename);
 	  else
 	    snprintf((char *)mess->file, sizeof(mess->file),
-		"%s.%d", service->basename, layer);
+		"%s.%d", service->pxe_basename, layer);
 	  
 	  option_put(mess, end, OPTION_MESSAGE_TYPE, 1, DHCPACK);
 	  option_put(mess, end, OPTION_SERVER_IDENTIFIER, INADDRSZ, htonl(context->local.s_addr));
@@ -2040,7 +2040,7 @@ static int pxe_uefi_workaround(int pxe_arch, struct dhcp_netid *netid, struct dh
     return 0;
   
   for (found = NULL, service = daemon->pxe_services; service; service = service->next)
-    if (pxe_arch == service->CSA && service->basename && match_netid(service->netid, netid, 1))
+    if (pxe_arch == service->CSA && service->pxe_basename && match_netid(service->netid, netid, 1))
       {
 	if (found)
 	  return 0; /* More than one relevant menu item */
@@ -2070,7 +2070,7 @@ static int pxe_uefi_workaround(int pxe_arch, struct dhcp_netid *netid, struct dh
     }
   
   snprintf((char *)mess->file, sizeof(mess->file), 
-	   strchr(found->basename, '.') ? "%s" : "%s.0", found->basename);
+	   strchr(found->pxe_basename, '.') ? "%s" : "%s.0", found->pxe_basename);
   
   return 1;
 }
@@ -2132,7 +2132,7 @@ static struct dhcp_opt *pxe_opts(int pxe_arch, struct dhcp_netid *netid, struct 
 	    return daemon->dhcp_opts;
 	  }
 	
-	boot_server = service->basename ? local : 
+	boot_server = service->pxe_basename ? local :
 	  (service->sname ? a_record_from_hosts(service->sname, now) : service->server);
 	
 	if (boot_server.s_addr != 0)

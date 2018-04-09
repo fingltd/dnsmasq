@@ -3528,7 +3528,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		 if (!comma)
 		   {
 		     new->type = 0; /* local boot */
-		     new->basename = NULL;
+		     new->pxe_basename = NULL;
 		   }
 		 else
 		   {
@@ -3537,12 +3537,12 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		     if (atoi_check(arg, &i))
 		       {
 			 new->type = i;
-			 new->basename = NULL;
+			 new->pxe_basename = NULL;
 		       }
 		     else
 		       {
 			 new->type = boottype++;
-			 new->basename = opt_string_alloc(arg);
+			 new->pxe_basename = opt_string_alloc(arg);
 		       }
 		     
 		     if (comma)
