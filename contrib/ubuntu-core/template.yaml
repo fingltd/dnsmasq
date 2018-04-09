@@ -29,8 +29,8 @@ parts:
     configflags:
       - -DCMAKE_PROJECT_CONFIGURATION_DIR=/var/snap/SNAPNAME/common/conf
       - -DCMAKE_PROJECT_NAME=SNAPNAME  # N.B. Snap Namw
-      - -DCMAKE_USER=root  # N.B. Snap Namw
-      - -DCMAKE_LOG_FILE=/var/snap/SNAPNAME/common/log/SNAPNAME.log  # N.B. Snap Namw
+      - -DCMAKE_USER=root
+      - -DCMAKE_LOG_FILE=/var/snap/SNAPNAME/common/log/SNAPNAME.log
       - -DCMAKE_SNAP=ON
       - -DCMAKE_C_COMPILER=GCC
     build-packages:

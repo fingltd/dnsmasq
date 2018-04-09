@@ -1743,7 +1743,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
           struct stat st;
           memset(&st,0,sizeof(st));
 	      daemon->log_file = opt_string_alloc(arg);
-          char *directory = dirname(daemon->log_file);
+          char *directory = dirname(arg);
           if (stat(directory, &st) == -1)
             if (mkdir(directory, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1)
               die(_("cannot create log directory %s: %s"), directory, EC_FILE);
