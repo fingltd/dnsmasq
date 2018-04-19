@@ -218,7 +218,7 @@ static void log_write(void)
             }
           rename(daemon->log_file, ithFile);
           cur_size = 0;
-          log_fd = log_reopen(daemon->log_file);
+          log_reopen(daemon->log_file);
         }
 	  continue;
 	}
