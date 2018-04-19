@@ -43,7 +43,7 @@ static int entries_lost = 0;
 static int connection_good = 1;
 static int max_logs = 0;
 static int max_files = 10;
-static int max_size = 65536;
+static int max_size = 1*1024*1024; //1MB
 static int cur_size = 0;
 static int connection_type = SOCK_DGRAM;
 
@@ -205,9 +205,6 @@ static void log_write(void)
           char ithFile[128], nextFile[128];
           if (cur_size < max_size)
          continue;
-          close(log_fd);
-          log_fd = -1; /* to print rotate line on syslog */
-          my_syslog(LOG_WARNING, _("Overflow: %d. Rotate and reopen. Files %d. Max Size %d."), cur_size, max_files, max_size);
           for (int i = max_files-2; i >= 0; --i)
             {
               sprintf(ithFile, "%s.%d", daemon->log_file, i);
