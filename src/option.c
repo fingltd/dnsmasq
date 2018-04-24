@@ -1594,7 +1594,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	  }
 	
 	dir_stream = opendir(directory);
-    if (ENOENT == errno)
+    if (!dir_stream && ENOENT == errno)
     {
       /* Directory does not exist. */
       if (mkdir(directory, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) < 0)
