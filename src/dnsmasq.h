@@ -1110,7 +1110,8 @@ extern struct daemon {
 
 /* cache.c */
 void cache_init(void);
-void log_query(unsigned int flags, char *name, struct all_addr *addr, char *arg); 
+void log_query(unsigned int flags, char *name, struct all_addr *addr, char *arg);
+void log_query_(unsigned int flags, char *name, struct all_addr *addr, char *arg, int errorLog);
 char *record_source(unsigned int index);
 char *querystr(char *desc, unsigned short type);
 struct crec *cache_find_by_addr(struct crec *crecp,

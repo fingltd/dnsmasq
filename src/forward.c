@@ -309,6 +309,16 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
       /* retry on existing query, send to all available servers  */
       domain = forward->sentto->domain;
       forward->sentto->failed_queries++;
+
+      if (forward->sentto->addr.sa.sa_family == AF_INET)
+          log_query_(F_SERVER | F_IPV4 | F_FORWARD, daemon->namebuff,
+                    (struct all_addr *)&forward->sentto->addr.in.sin_addr, NULL, LOG_ERR);
+#ifdef HAVE_IPV6
+      else
+          log_query_(F_SERVER | F_IPV6 | F_FORWARD, daemon->namebuff,
+                    (struct all_addr *)&forward->sentto->addr.in6.sin6_addr, NULL, LOG_ERR);
+#endif
+
       if (!option_bool(OPT_ORDER))
 	{
 	  forward->forwardall = 1;
