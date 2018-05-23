@@ -1682,17 +1682,17 @@ void log_query_(unsigned int flags, char *name, struct all_addr *addr, char *arg
   if (strlen(name) == 0)
     name = ".";
 
-  if (errorLog == LOG_ERR) {
+  if (errorLog != LOG_INFO) {
       if (option_bool(OPT_EXTRALOG)) {
           int port = prettyprint_addr(daemon->log_source_addr, daemon->addrbuff2);
           if (flags & F_NOEXTRA)
-              my_syslog(errorLog, "Failed * %s/%u %s %s %s %s", daemon->addrbuff2, port, source, name, verb, dest);
+              my_syslog(errorLog, "Query failed - * %s/%u %s %s %s %s", daemon->addrbuff2, port, source, name, verb, dest);
           else
-              my_syslog(errorLog, "Failed %u %s/%u %s %s %s %s", daemon->log_display_id, daemon->addrbuff2, port, source,
+              my_syslog(errorLog, "Query failed - %u %s/%u %s %s %s %s", daemon->log_display_id, daemon->addrbuff2, port, source,
                         name, verb, dest);
       }
       else {
-          my_syslog(errorLog, "Failed %s %s %s %s", source, name, verb, dest);
+          my_syslog(errorLog, "Query failed - %s %s %s %s", source, name, verb, dest);
       }
   }
   else
