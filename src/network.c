@@ -1448,7 +1448,7 @@ void add_update_server(int flags,
       serv->flags = flags;
       serv->domain = domain_str;
       serv->next = next;
-      serv->queries = serv->failed_queries = 0;
+      serv->replies = serv->queries = serv->failed_queries = 0;
 #ifdef HAVE_LOOP
       serv->uid = rand32();
 #endif      

@@ -1140,6 +1140,8 @@ void reply_query(int fd, int family, time_t now)
 #endif
 	  send_from(forward->fd, option_bool(OPT_NOWILD) || option_bool (OPT_CLEVERBIND), daemon->packet, nn, 
 		    &forward->source, &forward->dest, forward->iface);
+
+	  server->replies++;
 	}
       free_frec(forward); /* cancel */
     }

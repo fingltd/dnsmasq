@@ -1351,7 +1351,7 @@ int cache_make_stat(struct txt_record *t)
 	  {
 	    char *new, *lenp;
 	    int port, newlen, bytes_avail, bytes_needed;
-	    unsigned int queries = 0, failed_queries = 0;
+	    unsigned int queries = 0, failed_queries = 0, replies = 0;
 	    for (serv1 = serv; serv1; serv1 = serv1->next)
 	      if (!(serv1->flags & 
 		    (SERV_NO_ADDR | SERV_LITERAL_ADDRESS | SERV_COUNTED | SERV_USE_RESOLV | SERV_NO_REBIND)) && 
@@ -1359,12 +1359,13 @@ int cache_make_stat(struct txt_record *t)
 		{
 		  serv1->flags |= SERV_COUNTED;
 		  queries += serv1->queries;
+		  replies += serv1->replies;
 		  failed_queries += serv1->failed_queries;
 		}
 	    port = prettyprint_addr(&serv->addr, daemon->addrbuff);
 	    lenp = p++; /* length */
 	    bytes_avail = bufflen - (p - buff );
-	    bytes_needed = snprintf(p, bytes_avail, "%s#%d %u %u", daemon->addrbuff, port, queries, failed_queries);
+	    bytes_needed = snprintf(p, bytes_avail, "%s#%d %u %u %u", daemon->addrbuff, port, queries, failed_queries, replies);
 	    if (bytes_needed >= bytes_avail)
 	      {
 		/* expand buffer if necessary */
@@ -1378,7 +1379,7 @@ int cache_make_stat(struct txt_record *t)
 		buff = new;
 		bufflen = newlen;
 		bytes_avail =  bufflen - (p - buff );
-		bytes_needed = snprintf(p, bytes_avail, "%s#%d %u %u", daemon->addrbuff, port, queries, failed_queries);
+		bytes_needed = snprintf(p, bytes_avail, "%s#%d %u %u %u", daemon->addrbuff, port, queries, failed_queries, replies );
 	      }
 	    *lenp = bytes_needed;
 	    p += bytes_needed;
@@ -1436,7 +1437,7 @@ void dump_cache(time_t now)
 	  (SERV_NO_ADDR | SERV_LITERAL_ADDRESS | SERV_COUNTED | SERV_USE_RESOLV | SERV_NO_REBIND)))
       {
 	int port;
-	unsigned int queries = 0, failed_queries = 0;
+	unsigned int queries = 0, failed_queries = 0, replies = 0;
 	for (serv1 = serv; serv1; serv1 = serv1->next)
 	  if (!(serv1->flags & 
 		(SERV_NO_ADDR | SERV_LITERAL_ADDRESS | SERV_COUNTED | SERV_USE_RESOLV | SERV_NO_REBIND)) && 
@@ -1444,10 +1445,11 @@ void dump_cache(time_t now)
 	    {
 	      serv1->flags |= SERV_COUNTED;
 	      queries += serv1->queries;
+          replies += serv1->replies;
 	      failed_queries += serv1->failed_queries;
 	    }
 	port = prettyprint_addr(&serv->addr, daemon->addrbuff);
-	my_syslog(LOG_INFO, _("server %s#%d: queries sent %u, retried or failed %u"), daemon->addrbuff, port, queries, failed_queries);
+	my_syslog(LOG_INFO, _("server %s#%d: queries sent %u, retried or failed %u, replies received %u"), daemon->addrbuff, port, queries, failed_queries, replies);
       }
   
   if (option_bool(OPT_DEBUG) || option_bool(OPT_LOG))
