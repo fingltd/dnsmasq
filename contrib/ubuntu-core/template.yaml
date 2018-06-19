@@ -6,7 +6,8 @@ description: |
   and DHCP server. It is intended to provide coupled DNS and DHCP 
   service to a LAN.
 architectures: 
-  - TYPE
+  - build-on: amd64
+    run-on:  TYPE
 grade: stable
 confinement: strict
 
