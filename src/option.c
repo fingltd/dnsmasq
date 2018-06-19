@@ -2289,11 +2289,14 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
       new = opt_malloc(sizeof(struct edns0_option));
       new->type = EDNS0_TYPE_PLAIN;
 
-      size_t size =0;
-      for( ; size < strlen(++cp); ++size ) {
+      size_t size = 0;
+      size_t len = strlen(++cp);
+      for( ; size < len; ++size ) {
         if (cp[size]==':') {
           if (strncmp(cp+(size+1), "xor", 3) == 0)
             new->type = EDNS0_TYPE_MAC_XOR;
+          else
+            --size;
           break;
         }
       }
