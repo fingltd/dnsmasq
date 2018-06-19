@@ -580,11 +580,14 @@ struct resolvc {
 };
 
 /* edns0 options parms from command-line */
+#define EDNS0_TYPE_PLAIN 0
+#define EDNS0_TYPE_MAC_XOR 1
 struct edns0_option {
   struct edns0_option *next;
   size_t len;
   u8 *data;
   short code;
+  u8 type;
 #ifdef HAVE_INOTIFY
   int wd; /* inotify watch descriptor */
 #endif
@@ -999,7 +1002,6 @@ extern struct daemon {
   time_t last_cache_dump;
   int port, query_port, min_port, max_port;
   unsigned long local_ttl, neg_ttl, max_ttl, min_cache_ttl, max_cache_ttl, auth_ttl, dhcp_ttl, use_dhcp_ttl;
-  unsigned char mac_xor_cipher[ETHER_ADDR_LEN];
   char *dns_client_id;
   struct hostsfile *addn_hosts;
   struct edns0_option *edns0opts;

@@ -2263,22 +2263,6 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	    set_option_bool(OPT_MAC_B64);
 	  else if (strcmp(arg, "text") == 0)
 	    set_option_bool(OPT_MAC_HEX);
-      else if (strncmp(arg, "xor", 3) == 0)
-      {
-        u8 byte = 0x00;
-        char *cp = arg + 4;
-        size_t hexsize = strlen(cp);
-        if (hexsize != ETHER_ADDR_LEN * 2) // base16
-          ret_err(_("bad format"));
-        for (unsigned i = 0; i < hexsize; i++)
-        {
-          if (!isxdigit(cp[i]))
-            ret_err(gen_err);
-          if (i%2) daemon->mac_xor_cipher[i/2] = (byte << 4) + char2hex(cp[i]);
-          else byte = char2hex(cp[i]);
-        }
-        set_option_bool(OPT_ADD_MAC_XOR);
-      }
 	  else
 	    ret_err(gen_err);
 	}
@@ -2287,7 +2271,6 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
     case LOPT_EDNS0_OPT: /* --edns0-option */
     {
       struct edns0_option *new;
-      size_t hexsize;
       char* cp;
       u8 byte;
       int code;
@@ -2303,14 +2286,23 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
       if (!atoi_check16(arg, &code))
         ret_err(_("wrong code"));
 
-      hexsize = strlen(++cp);
-
       new = opt_malloc(sizeof(struct edns0_option));
-      new->len = hexsize/2; // base16
+      new->type = EDNS0_TYPE_PLAIN;
+
+      size_t size =0;
+      for( ; size < strlen(++cp); ++size ) {
+        if (cp[size]==':') {
+          if (strncmp(cp+(size+1), "xor", 3) == 0)
+            new->type = EDNS0_TYPE_MAC_XOR;
+          break;
+        }
+      }
+
+      new->len = size/2; // base16
       new->code = (short) code;
       new->data = opt_malloc(new->len);
 
-      for (unsigned i = 0; i < hexsize; i++)
+      for (unsigned i = 0; i < size; i++)
     {
       if (!isxdigit(cp[i]))
         ret_err(gen_err);

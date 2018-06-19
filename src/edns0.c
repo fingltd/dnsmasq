@@ -293,16 +293,9 @@ static size_t add_mac(struct dns_header *header, size_t plen, unsigned char *lim
   int maclen;
   unsigned char mac[DHCP_CHADDR_MAX];
 
-  if ((maclen = find_mac(l3, mac, 1, now)) == ETHER_ADDR_LEN)
-  {
-    if (option_bool(OPT_ADD_MAC_XOR))
-    {
-      for (unsigned i = 0; i < ETHER_ADDR_LEN; i++)
-        mac[i] ^= daemon->mac_xor_cipher[i];
-    }
+  if ((maclen = find_mac(l3, mac, 1, now)) != 0)
     plen = add_pseudoheader(header, plen, limit, PACKETSZ, EDNS0_OPTION_MAC, mac, maclen, 0, 0);
 
-  }
   return plen;
 }
 
@@ -436,7 +429,7 @@ size_t add_edns0_config(struct dns_header *header, size_t plen, unsigned char *l
 {
   *check_subnet = 0;
 
-  if (option_bool(OPT_ADD_MAC) || option_bool(OPT_ADD_MAC_XOR))
+  if (option_bool(OPT_ADD_MAC))
     plen  = add_mac(header, plen, limit, source, now);
   
   if (option_bool(OPT_MAC_B64) || option_bool(OPT_MAC_HEX))
@@ -452,8 +445,24 @@ size_t add_edns0_config(struct dns_header *header, size_t plen, unsigned char *l
       *check_subnet = 1;
     }
 
-  for (struct edns0_option *e = daemon->edns0opts; e; e = e->next)
-    plen = add_pseudoheader(header, plen, limit, PACKETSZ, e->code, e->data, e->len, 0, 1);
+  for (struct edns0_option *e = daemon->edns0opts; e; e = e->next) {
+    if (e->type == EDNS0_TYPE_PLAIN) {
+        plen += add_pseudoheader(header, plen, limit, PACKETSZ, e->code, e->data, e->len, 0, 0);
+    }
+    else if (e->type == EDNS0_TYPE_MAC_XOR) {
+        int maclen;
+        unsigned char mac[DHCP_CHADDR_MAX];
+
+        if ((maclen = find_mac(source, mac, 1, now)) == ETHER_ADDR_LEN) {
+            for (unsigned i = 0; i < MIN(ETHER_ADDR_LEN, e->len); i++) {
+                mac[i] ^= e->data[i];
+            }
+
+            plen += add_pseudoheader(header, plen, limit, PACKETSZ, e->code, mac, maclen, 0, 0);
+
+        }
+    }
+  }
 
   return plen;
 }
