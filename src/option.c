@@ -2466,13 +2466,17 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	    while (rebind || (end = split_chr(arg, '/')))
 	      {
 		char *domain = NULL;
-		/* elide leading dots - they are implied in the search algorithm */
-		while (*arg == '.') arg++;
-		/* # matches everything and becomes a zero length domain string */
-		if (strcmp(arg, "#") == 0)
-		  domain = "";
-		else if (strlen (arg) != 0 && !(domain = canonicalise_opt(arg)))
-		  option = '?';
+
+        if (strlen(arg) == 1 && strcmp(arg, ".") == 0)
+             domain = arg;
+        else {/* elide leading dots - they are implied in the search algorithm */
+            while (*arg == '.') arg++;
+            /* # matches everything and becomes a zero length domain string */
+            if (strcmp(arg, "#") == 0)
+                domain = "";
+            else if (strlen(arg) != 0 && !(domain = canonicalise_opt(arg)))
+                option = '?';
+        }
 		serv = opt_malloc(sizeof(struct server));
 		memset(serv, 0, sizeof(struct server));
 		serv->next = newlist;

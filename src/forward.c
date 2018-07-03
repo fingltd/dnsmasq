@@ -149,9 +149,11 @@ static unsigned int search_servers(time_t now, struct all_addr **addrpp, unsigne
       {
 	unsigned int domainlen = strlen(serv->domain);
 	char *matchstart = qdomain + namelen - domainlen;
-	if (namelen >= domainlen &&
-	    hostname_isequal(matchstart, serv->domain) &&
-	    (domainlen == 0 || namelen == domainlen || *(matchstart-1) == '.' ))
+	if ( (namelen >= domainlen &&
+	     hostname_isequal(matchstart, serv->domain) &&
+	     (domainlen == 0 || namelen == domainlen || *(matchstart-1) == '.' )) ||
+			(namelen == 0 && domainlen==1 && serv->domain[0] == '.')
+		)
 	  {
 	    if ((serv->flags & SERV_NO_REBIND) && norebind)	
 	      *norebind = 1;
