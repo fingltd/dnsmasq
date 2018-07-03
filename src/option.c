@@ -2467,8 +2467,10 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	      {
 		char *domain = NULL;
 
-        if (strlen(arg) == 1 && strcmp(arg, ".") == 0)
-             domain = arg;
+        if (strlen(arg) == 1 && strcmp(arg, ".") == 0) {
+          domain = whine_malloc(strlen(arg)+1);
+          strcpy(domain, arg);
+        }
         else {/* elide leading dots - they are implied in the search algorithm */
             while (*arg == '.') arg++;
             /* # matches everything and becomes a zero length domain string */
