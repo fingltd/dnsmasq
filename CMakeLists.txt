@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 
+# This variable are set externally by snap builder
+# Set to default for dev build
 IF(NOT CMAKE_PROJECT_NAME)
 	SET(CMAKE_PROJECT_NAME "dnsmasq")
 ENDIF(NOT CMAKE_PROJECT_NAME)
+
+IF(NOT CMAKE_PROJECT_CONFIGURATION_DIR)
+	SET(CMAKE_PROJECT_CONFIGURATION_DIR "/etc/dnsmasq.d/")
+ENDIF(NOT CMAKE_PROJECT_CONFIGURATION_DIR)
 
 project(${CMAKE_PROJECT_NAME} C)
 set(CMAKE_C_STANDARD 99)

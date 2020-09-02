@@ -31,7 +31,7 @@ parts:
     source: SNAPDIR/../..
     configflags:
       - -DCMAKE_PROJECT_CONFIGURATION_DIR=/var/snap/SNAPNAME/common/conf
-      - -DCMAKE_PROJECT_NAME=SNAPNAME  # N.B. Snap Namw
+      - -DCMAKE_PROJECT_NAME=SNAPNAME  # N.B. Snap Name
       - -DCMAKE_USER=root
       - -DCMAKE_LOG_FILE=/var/snap/SNAPNAME/common/log/SNAPNAME.log
       - -DCMAKE_SNAP=ON
